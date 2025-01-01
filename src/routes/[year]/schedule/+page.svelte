@@ -3,6 +3,7 @@
   import { page } from '$app/stores'
 
   const years = ['2018', '2019']
+  let room = 'main'
 
   const presentations = {
     main: [
@@ -19,27 +20,25 @@
         end: new Date('2025-04-17T13:15:00'),
       },
     ],
+    second: [
+      {
+        title: 'Naslov 3',
+        start: new Date('2025-04-17T14:15:00'),
+        duration: 30,
+        end: new Date('2025-04-17T14:45:00'),
+      },
+      {
+        title: 'Naslov 4',
+        start: new Date('2025-04-17T15:00:00'),
+        duration: 15,
+        end: new Date('2025-04-17T15:15:00'),
+      },
+    ],
   }
 
   const redirect = (year: string) => () => {
     goto(`/${year}/schedule`)
   }
-
-  const times: string[] = []
-  let date = new Date('2019-12-17T12:00:00')
-  for (let i = 0; i < 8; ++i) {
-    const minute = date.getMinutes()
-    if (minute < 10) {
-      times.push(`${date.getHours()}:0${minute}`)
-    } else {
-      times.push(`${date.getHours()}:${minute}`)
-    }
-    date = new Date(date.getTime() + 15 * 60000)
-  }
-
-  $: gridNames = times
-    .map((time) => `[_${time.replace(/:/, '')}] auto `)
-    .join('')
 
   function gridName(date: Date) {
     const minute = date.getMinutes()
@@ -48,6 +47,41 @@
     }
     return `_${date.getHours()}${minute}`
   }
+
+  function constructGrid(data: any, room: string) {
+    const presentations = room ? data[room] : ''
+    const result = {
+      start: new Date(
+        Math.min(...presentations.map((presentation) => presentation.start)),
+      ),
+      end: new Date(
+        Math.max(...presentations.map((presentation) => presentation.end)),
+      ),
+      rows: 0,
+      times: [],
+      gridNames: [],
+    }
+    result.start = new Date(result.start.getTime() - 15 * 60000)
+    result.end = new Date(result.end.getTime() + 15 * 60000)
+    result.rows = (result.end.getTime() - result.start.getTime()) / 15 / 60000
+    let date = new Date(result.start)
+    for (let i = 0; i < result.rows; ++i) {
+      const minute = date.getMinutes()
+      if (minute < 10) {
+        result.times.push(`${date.getHours()}:0${minute}`)
+      } else {
+        result.times.push(`${date.getHours()}:${minute}`)
+      }
+      date = new Date(date.getTime() + 15 * 60000)
+    }
+    result.gridNames = result.times
+      .map((time) => `[_${time.replace(/:/, '')}] auto`)
+      .join(' ')
+    return result
+  }
+
+  $: gridData = constructGrid(presentations, room)
+  $: console.log(gridData)
 </script>
 
 <div class="content">
@@ -65,15 +99,15 @@
       {/each}
     </select>
     <select class="dropdown">
-      {#each Object.keys(presentations) as room}
-        <option value={room}>
-          {room}
+      {#each Object.keys(presentations) as r}
+        <option value={r} on:click={() => room = r}>
+          {r}
         </option>
       {/each}
     </select>
   </div>
-  <div class="schedule" style={`grid-template-rows: ${gridNames}`}>
-    {#each times as time}
+  <div class="schedule" style={`grid-template-rows: ${gridData.gridNames}`}>
+    {#each gridData.times as time}
       <div class="time time-left">
         {time}
       </div>
@@ -81,7 +115,7 @@
         {time}
       </div>
     {/each}
-    {#each presentations.main as presentation}
+    {#each presentations[room] as presentation}
       <div
         class="title"
         style={`grid-row-start: ${gridName(presentation.start)}; grid-row-end: ${gridName(presentation.end)};`}
