@@ -1,17 +1,14 @@
 <script>
   import './styles.css'
   import 'chota'
-  import { create_store } from '@freenit-framework/core'
+  import { create_store, store } from '@freenit-framework/core'
   import { SvelteToast } from '@zerodevx/svelte-toast'
-  import {
-    mdiAccountTie,
-    mdiArrowDownBoldCircleOutline,
-    mdiLoginVariant,
-    mdiMenu,
-  } from '@mdi/js'
+  import { mdiAccountTie, mdiArrowDownBoldCircleOutline, mdiLoginVariant, mdiMenu } from '@mdi/js'
 
   const options = {}
-  let open = false
+  let { children } = $props()
+  let open = $state(false)
+  let loggedin = Boolean(store.user ? store.user.profile.id : false)
 
   // First invocation of this function creates store, next invocations return
   // existing one, so only first invocation takes "prefix" argument into account
@@ -20,6 +17,8 @@
   function toggle() {
     open = !open
   }
+
+  $effect(() => { loggedin = Boolean(store.user.profile.id) })
 </script>
 
 <svelte:head>
@@ -31,12 +30,12 @@
 <div class="sidebar" class:sidebar-open={open}>
   {#if open}
     <div class="wrapper">
-      <a class="item" href="/coc" on:click={toggle}>
+      <a class="item" href="/coc" onclick={toggle}>
         <svg
           class="icon dark"
-          on:click={toggle}
-          on:keyup={toggle}
-          on:keydown={toggle}
+          onclick={toggle}
+          onkeyup={toggle}
+          onkeydown={toggle}
           role="button"
           tabindex={0}
         >
@@ -44,33 +43,35 @@
         </svg>
         CoC
       </a>
-      <a class="item" href="/register" on:click={toggle}>
-        <svg
-          class="icon dark"
-          on:click={toggle}
-          on:keyup={toggle}
-          on:keydown={toggle}
-          role="button"
-          tabindex={0}
-        >
-          <path d={mdiArrowDownBoldCircleOutline} />
-        </svg>
-        Register
-      </a>
-      <a class="item" href="/login" on:click={toggle}>
-        <svg
-          class="icon dark"
-          on:click={toggle}
-          on:keyup={toggle}
-          on:keydown={toggle}
-          role="button"
-          tabindex={0}
-        >
-          <path d={mdiLoginVariant} />
-        </svg>
-        Login
-      </a>
-      <button class="close" on:click={toggle}>x</button>
+      {#if !loggedin}
+        <a class="item" href="/register" onclick={toggle}>
+          <svg
+            class="icon dark"
+            onclick={toggle}
+            onkeyup={toggle}
+            onkeydown={toggle}
+            role="button"
+            tabindex={0}
+          >
+            <path d={mdiArrowDownBoldCircleOutline} />
+          </svg>
+          Register
+        </a>
+        <a class="item" href="/login" onclick={toggle}>
+          <svg
+            class="icon dark"
+            onclick={toggle}
+            onkeyup={toggle}
+            onkeydown={toggle}
+            role="button"
+            tabindex={0}
+          >
+            <path d={mdiLoginVariant} />
+          </svg>
+          Login
+        </a>
+      {/if}
+      <button class="close" onclick={toggle}>x</button>
     </div>
   {/if}
 </div>
@@ -78,9 +79,9 @@
   <div class="menu">
     <svg
       class="icon"
-      on:click={toggle}
-      on:keyup={toggle}
-      on:keydown={toggle}
+      onclick={toggle}
+      onkeyup={toggle}
+      onkeydown={toggle}
       role="button"
       tabindex={0}
     >
@@ -88,7 +89,7 @@
     </svg>
     <a href="/" class="title">BSides Serbia</a>
   </div>
-  <slot />
+  {@render children?.()}
 </div>
 
 <style>
