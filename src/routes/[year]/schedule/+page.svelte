@@ -1,9 +1,17 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
-  import { page } from '$app/stores'
+  import type { PageProps } from './$types'
 
-  const years = ['2018', '2019']
-  let room = 'main'
+  const { data: props }: PageProps = $props()
+
+  const years = ['2024', '2025']
+  let room = $state('main')
+  let gridData = $state({
+    gridNames: [],
+    times: [],
+    start: new Date(0),
+    end: new Date(0),
+  })
 
   const presentations = {
     main: [
@@ -51,21 +59,16 @@
   function constructGrid(data: any, room: string) {
     const presentations = room ? data[room] : ''
     const result = {
-      start: new Date(
-        Math.min(...presentations.map((presentation) => presentation.start)),
-      ),
-      end: new Date(
-        Math.max(...presentations.map((presentation) => presentation.end)),
-      ),
-      rows: 0,
+      start: new Date(Math.min(...presentations.map((presentation: any) => presentation.start))),
+      end: new Date(Math.max(...presentations.map((presentation: any) => presentation.end))),
       times: [],
       gridNames: [],
     }
     result.start = new Date(result.start.getTime() - 15 * 60000)
     result.end = new Date(result.end.getTime() + 15 * 60000)
-    result.rows = (result.end.getTime() - result.start.getTime()) / 15 / 60000
+    const rows = (result.end.getTime() - result.start.getTime()) / 15 / 60000
     let date = new Date(result.start)
-    for (let i = 0; i < result.rows; ++i) {
+    for (let i = 0; i < rows; ++i) {
       const minute = date.getMinutes()
       if (minute < 10) {
         result.times.push(`${date.getHours()}:0${minute}`)
@@ -74,33 +77,28 @@
       }
       date = new Date(date.getTime() + 15 * 60000)
     }
-    result.gridNames = result.times
-      .map((time) => `[_${time.replace(/:/, '')}] auto`)
-      .join(' ')
+    result.gridNames = result.times.map((time) => `[_${time.replace(/:/, '')}] auto`).join(' ')
     return result
   }
 
-  $: gridData = constructGrid(presentations, room)
-  $: console.log(gridData)
+  $effect(() => {
+    gridData = constructGrid(presentations, room)
+  })
 </script>
 
 <div class="content">
-  <h2>Schedule for {$page.params.year}</h2>
+  <h2>Schedule for {props.year}</h2>
   <div class="options">
     <select class="dropdown">
       {#each years as year}
-        <option
-          value={year}
-          on:click={redirect(year)}
-          selected={year === $page.params.year}
-        >
+        <option value={year} onclick={redirect(year)} selected={year === props.year}>
           {year}
         </option>
       {/each}
     </select>
     <select class="dropdown">
       {#each Object.keys(presentations) as r}
-        <option value={r} on:click={() => room = r}>
+        <option value={r} onclick={() => (room = r)}>
           {r}
         </option>
       {/each}

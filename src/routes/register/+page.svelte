@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Register } from '@freenit-framework/svelte-base'
+  import { Register } from '@freenit-framework/core'
 </script>
 
 <Register />

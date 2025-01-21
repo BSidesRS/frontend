@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Login } from '@freenit-framework/svelte-base'
+  import { Login } from '@freenit-framework/core'
 </script>
 
 <Login />

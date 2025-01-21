@@ -1,11 +1,13 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { page } from '$app/stores'
   import { goto } from '$app/navigation'
-  import { store } from '@freenit-framework/svelte-base'
+  import { store } from '@freenit-framework/core'
+  import type { PageProps } from './$types'
+
+  const { data: props }: PageProps = $props()
 
   onMount(async () => {
-    const response = await store().auth.verify($page.params.token)
+    const response = await store.auth.verify(props.token)
     if (response.ok) {
       goto('/login')
     }

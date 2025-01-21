@@ -1,21 +1,21 @@
 <script>
   import './styles.css'
   import 'chota'
+  import { create_store } from '@freenit-framework/core'
+  import { SvelteToast } from '@zerodevx/svelte-toast'
   import {
     mdiAccountTie,
     mdiArrowDownBoldCircleOutline,
     mdiLoginVariant,
     mdiMenu,
   } from '@mdi/js'
-  import { store } from '@freenit-framework/svelte-base'
-  import { SvelteToast } from '@zerodevx/svelte-toast'
 
   const options = {}
   let open = false
 
   // First invocation of this function creates store, next invocations return
   // existing one, so only first invocation takes "prefix" argument into account
-  store('/api/v1')
+  create_store('/api/v1')
 
   function toggle() {
     open = !open
