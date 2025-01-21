@@ -1,24 +1,44 @@
-<script>
+<script lang="ts">
   import './styles.css'
   import 'chota'
+  import { onMount } from 'svelte'
   import { create_store, store } from '@freenit-framework/core'
   import { SvelteToast } from '@zerodevx/svelte-toast'
-  import { mdiAccountTie, mdiArrowDownBoldCircleOutline, mdiLoginVariant, mdiMenu } from '@mdi/js'
+  import {
+    mdiAccountTie,
+    mdiArrowDownBoldCircleOutline,
+    mdiLoginVariant,
+    mdiLogoutVariant,
+    mdiMenu,
+  } from '@mdi/js'
 
   const options = {}
   let { children } = $props()
   let open = $state(false)
-  let loggedin = Boolean(store.user ? store.user.profile.id : false)
+  let loggedin = $state(false)
 
-  // First invocation of this function creates store, next invocations return
-  // existing one, so only first invocation takes "prefix" argument into account
-  create_store('/api/v1')
+  onMount(async () => {
+    create_store('/api/v1')
+    const data = await store.auth.refresh_token()
+    if (data && data.ok) {
+      loggedin = Boolean(store.user.profile.id)
+    } else {
+      loggedin = false
+    }
+  })
 
-  function toggle() {
+  const toggle = () => {
     open = !open
   }
 
-  $effect(() => { loggedin = Boolean(store.user.profile.id) })
+  const logout = async () => {
+    open = !open
+    await store.auth.logout()
+  }
+
+  $effect(() => {
+    loggedin = Boolean(store.user ? store.user.profile.id : false)
+  })
 </script>
 
 <svelte:head>
@@ -43,7 +63,21 @@
         </svg>
         CoC
       </a>
-      {#if !loggedin}
+      {#if loggedin}
+        <a class="item" href="/" onclick={logout}>
+          <svg
+            class="icon dark mirror"
+            onclick={logout}
+            onkeyup={logout}
+            onkeydown={logout}
+            role="button"
+            tabindex={0}
+          >
+            <path d={mdiLogoutVariant} />
+          </svg>
+          Logout
+        </a>
+      {:else}
         <a class="item" href="/register" onclick={toggle}>
           <svg
             class="icon dark"
@@ -157,5 +191,9 @@
     align-items: center;
     justify-content: flex-start;
     text-align: center;
+  }
+
+  .mirror {
+    transform: scaleX(-1);
   }
 </style>
