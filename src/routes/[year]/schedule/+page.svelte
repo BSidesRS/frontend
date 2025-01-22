@@ -2,23 +2,15 @@
   import { onMount } from 'svelte'
   import { goto } from '$app/navigation'
   import store from '$lib/store'
-  import type { PageProps } from './$types'
 
-  const { data: props }: PageProps = $props()
-
+  const { data: props } = $props()
   const years = ['2024', '2025']
-  console.log(store)
   let room = $state('main')
   let gridData = $state({
     gridNames: [],
     times: [],
     start: new Date(0),
     end: new Date(0),
-  })
-
-  onMount(async () => {
-    await store.conference.fetchAll()
-    console.log(store.conference)
   })
 
   const presentations = {
@@ -51,6 +43,10 @@
       },
     ],
   }
+
+  onMount(async () => {
+    await store.conference.fetchAll()
+  })
 
   const redirect = (year: string) => () => {
     goto(`/${year}/schedule`)

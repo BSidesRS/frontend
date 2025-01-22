@@ -1,4 +1,5 @@
 import { methods } from '@freenit-framework/core'
+import store from '.'
 
 export default class ConferenceStore {
   list = $state({ page: 0, perpage: 0, data: [], total: 0 })
