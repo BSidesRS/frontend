@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { goto } from '$app/navigation'
-  import { store } from '@freenit-framework/core'
+  import store from '$lib/store'
   import type { PageProps } from './$types'
 
   const { data: props }: PageProps = $props()

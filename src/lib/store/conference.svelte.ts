@@ -1,4 +1,4 @@
-import { methods, store } from '@freenit-framework/core'
+import { methods } from '@freenit-framework/core'
 
 export default class ConferenceStore {
   list = $state({ page: 0, perpage: 0, data: [], total: 0 })
@@ -6,7 +6,6 @@ export default class ConferenceStore {
 
   constructor(prefix) {
     this.prefix = prefix
-    store.conference = this
   }
 
   fetchAll = async (page: Number = 1, perpage: Number = 10) => {

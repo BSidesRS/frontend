@@ -1,9 +1,8 @@
 <script lang="ts">
   import './styles.css'
-  import { ConferenceStore } from '$lib/store'
   import 'chota'
   import { onMount } from 'svelte'
-  import { create_store, store } from '@freenit-framework/core'
+  import store from '$lib/store'
   import { SvelteToast } from '@zerodevx/svelte-toast'
   import {
     mdiAccountTie,
@@ -17,10 +16,6 @@
   let { children } = $props()
   let open = $state(false)
   let loggedin = $state(false)
-  const prefix = '/api/v1'
-
-  create_store(prefix)
-  new ConferenceStore(prefix)
 
   onMount(async () => {
     const data = await store.auth.refresh_token()

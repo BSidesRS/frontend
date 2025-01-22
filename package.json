@@ -16,7 +16,7 @@
   "devDependencies": {
     "@eslint/compat": "^1.2.5",
     "@eslint/js": "^9.18.0",
-    "@freenit-framework/core": "^0.0.36",
+    "@freenit-framework/core": "^0.0.43",
     "@mdi/js": "^7.4.47",
     "@sveltejs/adapter-node": "^5.2.12",
     "@sveltejs/kit": "^2.0.0",
