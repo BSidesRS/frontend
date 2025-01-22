@@ -1,16 +1,24 @@
 <script lang="ts">
+  import { onMount } from 'svelte'
   import { goto } from '$app/navigation'
   import type { PageProps } from './$types'
+  import { store } from '@freenit-framework/core'
 
   const { data: props }: PageProps = $props()
 
   const years = ['2024', '2025']
+  console.log(store)
   let room = $state('main')
   let gridData = $state({
     gridNames: [],
     times: [],
     start: new Date(0),
     end: new Date(0),
+  })
+
+  onMount(async () => {
+    await store.conference.fetchAll()
+    console.log(store.conference)
   })
 
   const presentations = {
@@ -48,7 +56,7 @@
     goto(`/${year}/schedule`)
   }
 
-  function gridName(date: Date) {
+  const gridName = (date: Date) => {
     const minute = date.getMinutes()
     if (minute < 10) {
       return `_${date.getHours()}0${minute}`
@@ -56,7 +64,7 @@
     return `_${date.getHours()}${minute}`
   }
 
-  function constructGrid(data: any, room: string) {
+  const constructGrid = (data: any, room: string) => {
     const presentations = room ? data[room] : ''
     const result = {
       start: new Date(Math.min(...presentations.map((presentation: any) => presentation.start))),

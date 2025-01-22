@@ -1,5 +1,6 @@
 <script lang="ts">
   import './styles.css'
+  import { ConferenceStore } from '$lib/store'
   import 'chota'
   import { onMount } from 'svelte'
   import { create_store, store } from '@freenit-framework/core'
@@ -16,9 +17,12 @@
   let { children } = $props()
   let open = $state(false)
   let loggedin = $state(false)
+  const prefix = '/api/v1'
+
+  create_store(prefix)
+  new ConferenceStore(prefix)
 
   onMount(async () => {
-    create_store('/api/v1')
     const data = await store.auth.refresh_token()
     if (data && data.ok) {
       loggedin = Boolean(store.user.profile.id)
