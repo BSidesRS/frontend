@@ -2,7 +2,6 @@
   import './styles.css'
   import 'chota'
   import { onMount } from 'svelte'
-  import store from '$lib/store'
   import { SvelteToast } from '@zerodevx/svelte-toast'
   import {
     mdiAccountTie,
@@ -11,19 +10,14 @@
     mdiLogoutVariant,
     mdiMenu,
   } from '@mdi/js'
+  import store from '$lib/store'
 
   const options = {}
   let { children } = $props()
   let open = $state(false)
-  let loggedin = $state(false)
 
   onMount(async () => {
-    const data = await store.auth.refresh_token()
-    if (data && data.ok) {
-      loggedin = Boolean(store.user.profile.id)
-    } else {
-      loggedin = false
-    }
+    await store.auth.refresh_token()
   })
 
   const toggle = () => {
@@ -34,10 +28,6 @@
     open = !open
     await store.auth.logout()
   }
-
-  $effect(() => {
-    loggedin = Boolean(store.user ? store.user.profile.id : false)
-  })
 </script>
 
 <svelte:head>
@@ -62,7 +52,7 @@
         </svg>
         CoC
       </a>
-      {#if loggedin}
+      {#if store.auth.loggedin()}
         <a class="item" href="/" onclick={logout}>
           <svg
             class="icon dark mirror"
