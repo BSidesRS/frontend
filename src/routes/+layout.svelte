@@ -4,11 +4,14 @@
   import { onMount } from 'svelte'
   import { SvelteToast } from '@zerodevx/svelte-toast'
   import {
+    mdiAccount,
+    mdiAccountGroup,
     mdiAccountTie,
     mdiArrowDownBoldCircleOutline,
     mdiLoginVariant,
     mdiLogoutVariant,
     mdiMenu,
+    mdiNotebookPlusOutline,
   } from '@mdi/js'
   import store from '$lib/store'
 
@@ -52,7 +55,48 @@
         </svg>
         CoC
       </a>
+      <a class="item" href="/cfp" onclick={toggle}>
+        <svg
+          class="icon dark"
+          onclick={toggle}
+          onkeyup={toggle}
+          onkeydown={toggle}
+          role="button"
+          tabindex={1}
+        >
+          <path d={mdiNotebookPlusOutline} />
+        </svg>
+        CfP
+      </a>
       {#if store.auth.loggedin()}
+        {#if store.user.profile.admin}
+          <a class="item" href="/users" onclick={toggle}>
+            <svg
+              class="icon dark"
+              onclick={toggle}
+              onkeyup={toggle}
+              onkeydown={toggle}
+              role="button"
+              tabindex={0}
+            >
+              <path d={mdiAccount} />
+            </svg>
+            Users
+          </a>
+          <a class="item" href="/roles" onclick={toggle}>
+            <svg
+              class="icon dark"
+              onclick={toggle}
+              onkeyup={toggle}
+              onkeydown={toggle}
+              role="button"
+              tabindex={1}
+            >
+              <path d={mdiAccountGroup} />
+            </svg>
+            Roles
+          </a>
+        {/if}
         <a class="item" href="/" onclick={logout}>
           <svg
             class="icon dark mirror"
