@@ -2,7 +2,7 @@
   import { User } from '@freenit-framework/core'
   import store from '$lib/store'
 
-  const { data } = $props()
+  const { data: props } = $props()
 </script>
 
-<User pk={data.pk} store={store} />
+<User pk={props.pk} store={store} />

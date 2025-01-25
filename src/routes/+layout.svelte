@@ -2,18 +2,14 @@
   import './styles.css'
   import 'chota'
   import { onMount } from 'svelte'
-  import { LeftPane, MenuItem, MenuItems, MenuBar } from '@freenit-framework/core'
   import { SvelteToast } from '@zerodevx/svelte-toast'
+  import { LeftPane, MenuItem, MenuItems, MenuBar } from '@freenit-framework/core'
   import { mdiAccountTie } from '@mdi/js'
   import store from '$lib/store'
 
   const options = {}
   let { children } = $props()
   let open = $state(false)
-
-  onMount(async () => {
-    await store.auth.refresh_token()
-  })
 
   const toggle = () => {
     open = !open
@@ -23,6 +19,10 @@
     open = !open
     await store.auth.logout()
   }
+
+  onMount(async () => {
+    await store.auth.refresh_token()
+  })
 </script>
 
 <svelte:head>
