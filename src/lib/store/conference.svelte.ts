@@ -2,8 +2,8 @@ import { methods } from '@freenit-framework/core'
 import store from '.'
 
 export default class ConferenceStore {
-  list = $state({ page: 0, perpage: 0, data: [], total: 0 })
-  detail = $state({})
+  list = $state({ page: 0, perpage: 0, pages: 0, data: [], total: 0 })
+  detail = $state({ id: 0, name: '', days: [], rooms: [] })
 
   constructor(prefix) {
     this.prefix = prefix
@@ -25,7 +25,7 @@ export default class ConferenceStore {
     const response = await methods.post(`${this.prefix}/conferences`, fields)
     if (response.ok) {
       const data = await response.json()
-      this.list = data
+      this.list.data.push(data)
       return { ...data, ok: true }
     }
     return response
