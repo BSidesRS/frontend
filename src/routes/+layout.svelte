@@ -39,14 +39,14 @@
   <MenuItems {toggle} {logout} {store} />
 </LeftPane>
 
-<MenuBar {toggle} title="BSidesSerbia" />
 <section class="root">
+  <MenuBar {toggle} title="BSidesSerbia" />
   {@render children?.()}
 </section>
 
 <style>
   .root {
-    height: 100vh;
-    width: 100vw;
+    height: 100dvh;
+    width: 100dvw;
   }
 </style>
