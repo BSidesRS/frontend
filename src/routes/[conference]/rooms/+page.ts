@@ -1,5 +1,5 @@
 export const load = ({ params }) => {
   return {
-    year: params.year
+    conference: params.conference
   }
 }

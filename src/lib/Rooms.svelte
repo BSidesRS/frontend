@@ -6,9 +6,10 @@
   let loading = $state(true)
   let showCreate = $state(false)
   let name = $state('')
+  let { conference } = $props()
 
   onMount(async () => {
-    const response = await store.conference.fetchAll()
+    const response = await store.room.fetchAll(conference)
     if (!response.ok) {
       notification.error(response.statusText)
     }
@@ -16,13 +17,13 @@
   })
 
   const fetchNext = async () => {
-    const { conference } = store
-    await conference.fetchAll(conference.list.page + 1)
+    const { room } = store
+    await room.fetchAll(conference, room.list.page + 1)
   }
 
   const fetchPrevious = async () => {
-    const { conference } = store
-    await conference.fetchAll(conference.list.page - 1)
+    const { room } = store
+    await room.fetchAll(conference, room.list.page - 1)
   }
 
   const toggleShowCreate = (event: Event) => {
@@ -32,7 +33,7 @@
 
   const create = async (event: Event) => {
     event.preventDefault()
-    const response = await store.conference.create({ name })
+    const response = await store.room.create(conference, { name })
     if (!response.ok) {
       notification.error(response.statusText)
     }
@@ -47,29 +48,29 @@
   {:else}
     <div class="container">
       <div class="header">
-        <h2>Conferences</h2>
+        <h2>Rooms</h2>
         <button class="button primary" onclick={toggleShowCreate}>Create</button>
       </div>
       <div class="table">
         <div class="heading">ID</div>
         <div class="heading">Name</div>
-        {#each store.conference.list.data as conference}
-          <div class="data">{conference.id}</div>
+        {#each store.room.list.data as room}
+          <div class="data">{room.id}</div>
           <div class="data">
-            <a href={`/conferences/${conference.id}`}>{conference.name}</a>
+            <a href={`/room/${room.id}`}>{room.name}</a>
           </div>
           <div class="border"></div>
         {/each}
       </div>
     </div>
     <div class="actions">
-      <button class="button" disabled={store.conference.list.page === 1} onclick={fetchPrevious}
+      <button class="button" disabled={store.room.list.page < 2} onclick={fetchPrevious}
         >&lt;</button
       >
-      {store.conference.list.page}
+      {store.room.list.page}
       <button
         class="button"
-        disabled={store.conference.list.page >= store.conference.list.pages}
+        disabled={store.room.list.page >= store.room.list.pages}
         onclick={fetchNext}>&gt;</button
       >
     </div>
@@ -131,3 +132,4 @@
     justify-content: space-between;
   }
 </style>
+

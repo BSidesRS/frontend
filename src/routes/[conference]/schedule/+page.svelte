@@ -91,11 +91,11 @@
 </script>
 
 <div class="content">
-  <h2>Schedule for {props.year}</h2>
+  <h2>Schedule for {props.conference}</h2>
   <div class="options">
     <select class="dropdown">
       {#each years as year}
-        <option value={year} onclick={redirect(year)} selected={year === props.year}>
+        <option value={year} onclick={redirect(year)} selected={year === props.conference}>
           {year}
         </option>
       {/each}

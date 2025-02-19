@@ -27,7 +27,7 @@
       <div class="heading">Name</div>
       {#each store.conference.detail.rooms as room}
         <div class="data">{room.id}</div>
-        <a class="data" href={`/rooms/${room.id}`}>{room.name}</a>
+        <a class="data" href={`/${store.conference.detail.name}/rooms/${room.id}`}>{room.name}</a>
         <div class="border"></div>
       {/each}
     </div>
